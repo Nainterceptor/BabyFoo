@@ -1,10 +1,10 @@
 import slug from 'slug';
-import UserAPI from '~plugins/api/user';
+import UserAPI from '~/plugins/api/user';
 
-export const state = {
+export const state = () => ({
   usersCache: {},
   users: [],
-};
+});
 
 export const getters = {
   getUser: state => id => state.usersCache[id],
