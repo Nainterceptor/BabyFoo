@@ -9,5 +9,11 @@ export default Object.assign(
     fetchAll() {
       return this.get('/users');
     },
+    fetchOne(id) {
+      return this.get(`/users/${id}`);
+    },
+    update(user) {
+      return this.put('/users', user);
+    },
   },
 );
