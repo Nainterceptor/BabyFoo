@@ -18,7 +18,7 @@
                     <td class="red">{{ score.red.join(', ') }}</td>
                     <td class="blue">{{ score.score.blue }}</td>
                     <td class="red">{{ score.score.red }}</td>
-                    <td :class="score.score.blue > score.score.red ? 'red' : 'blue'">
+                    <td :class="score.score.blue > score.score.red ? 'blue' : 'red'">
                         {{ score.score.blue > score.score.red ? 'Blue' : 'Red' }}
                     </td>
                 </tr>
@@ -31,17 +31,17 @@
             </table>
             <form @submit.prevent="create(newScore)">
                 <select multiple class="blue" v-model="newScore.blue">
-                    <option v-for="user in users" :value="user._id">
+                    <option v-for="user in users" :value="user._id" :key="user._id">
                         {{ user.name }}
                     </option>
                 </select>
                 <select multiple class="red" v-model="newScore.red">
-                    <option v-for="user in users" :value="user._id">
+                    <option v-for="user in users" :value="user._id" :key="user._id">
                         {{ user.name }}
                     </option>
                 </select>
-                <input type="number" max="10" min="0" class="stack blue" v-model.number="newScore.score.blue" placeholder="Blue Score" />
-                <input type="number" max="10" min="0" class="stack red" v-model.number="newScore.score.red" placeholder="Red Score" />
+                <input required type="number" max="10" min="0" class="stack blue" v-model.number="newScore.score.blue" placeholder="Blue Score" />
+                <input required type="number" max="10" min="0" class="stack red" v-model.number="newScore.score.red" placeholder="Red Score" />
                 <button class="stack" type="submit">Envoyer</button>
             </form>
         </div>
@@ -56,9 +56,9 @@
       blue: [],
       red: [],
       score: {
-        red: null,
-        blue: null,
-      }
+        red: undefined,
+        blue: undefined,
+      },
     };
   }
 
@@ -77,10 +77,17 @@
       }),
     },
     methods: {
+      areSameArrays(a, b) {
+        return !a.some((value, index) => value !== b[index])
+      },
       async create(score) {
+        if (this.areSameArrays(score.red, score.blue)) {
+          this.$toasted.error("You can't play against yourself, duuh!");
+          return;
+        }
         try {
           await this.scoreCreate(score);
-          this.$toasted.success('Score saved !');
+          this.$toasted.success('Score saved!');
           this.newScore = generateFreshScore();
         } catch (e) {
           this.$toasted.error(e.response.data);
@@ -90,7 +97,7 @@
         scoreCreate: 'score/create',
       }),
       flushNewScore() {
-          this.newScore = generateFreshScore();
+        this.newScore = generateFreshScore();
       },
     },
   };

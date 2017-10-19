@@ -10,14 +10,14 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="user in users">
+                <tr v-for="user in users" v-bind:key="user._id">
                     <td>{{ user.name }}</td>
                     <td><button @click="changeCurrentUser(user)">Edit</button></td>
                 </tr>
                 </tbody>
                 <tfoot>
                 <tr>
-                    <th colspan="2"><button @click="changeCurrentUser(null)">New</button></th>
+                    <th colspan="2"><button @click="changeCurrentUser(undefined)">New</button></th>
                 </tr>
                 </tfoot>
             </table>
@@ -36,7 +36,7 @@
     function generateFreshUserToEdit() {
       return {
         name: '',
-        _id: null,
+        _id: undefined,
       };
     }
     export default {
@@ -65,11 +65,12 @@
         ...mapActions({
           userSave: 'user/save',
         }),
-        changeCurrentUser(user = null) {
-          if (!user) {
+        changeCurrentUser(user = undefined) {
+          if (user === undefined) {
             this.userToEdit = generateFreshUserToEdit();
           } else {
-            this.userToEdit = this.getUser(user._id);
+            const real_user = this.getUser(user._id);
+            this.userToEdit = { ...real_user };
           }
         },
       },

@@ -2,6 +2,9 @@
 
 > Babyfoo project
 
+## Environment setup
+This project uses [MongoDB](https://www.mongodb.com) so don't forget to install it first.
+
 ## Build Setup
 
 ``` bash
