@@ -56,9 +56,9 @@
       blue: [],
       red: [],
       score: {
-        red: null,
-        blue: null,
-      }
+        red: undefined,
+        blue: undefined,
+      },
     };
   }
 
@@ -77,10 +77,17 @@
       }),
     },
     methods: {
+      areSameArrays(a, b) {
+        return !a.some((value, index) => value !== b[index])
+      },
       async create(score) {
+        if (this.areSameArrays(score.red, score.blue)) {
+          this.$toasted.error("You can't play against yourself, duuh!");
+          return;
+        }
         try {
           await this.scoreCreate(score);
-          this.$toasted.success('Score saved !');
+          this.$toasted.success('Score saved!');
           this.newScore = generateFreshScore();
         } catch (e) {
           this.$toasted.error(e.response.data);
@@ -90,7 +97,7 @@
         scoreCreate: 'score/create',
       }),
       flushNewScore() {
-          this.newScore = generateFreshScore();
+        this.newScore = generateFreshScore();
       },
     },
   };
